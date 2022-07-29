@@ -1,0 +1,76 @@
+{% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('{{product.img_url}}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>{{product.name}}</h1>
+            <h2 class="subheading">${{product.price}}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto  ">
+            <h3>{{ product.body|safe }}</h3>
+          <hr>
+            <form action="{{url_for('add_cart',product_id=product.id)}}", method="GET" >
+  <fieldset>
+    <legend>Quantity</legend>
+
+    <input type="number" name="number"
+           min = "0" max="100" step="1" value="1"><br /><br />
+      <a href=""><button type="submit" value="Add to cart" >add to cart</button></a>
+
+
+  </fieldset>
+</form >
+
+            <div class="clearfix">
+             {% if current_user.id ==1: %}
+            <a class="btn btn-primary float-right" href="{{url_for('edit_post', products_id=product.id)}}">Edit Post</a>
+            {% endif %}
+            </div>
+
+
+
+<!--           Comments Area -->
+            <div class="review" >
+               {{ ckeditor.load() }}
+                {{ ckeditor.config(name='comment_text') }}
+                {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+            </div>
+                <div class="col-lg-8 col-md-10 mx-auto comment">
+                    {% for comment in product.comments: %}
+                    <ul class="commentList">
+                        <li>
+                            <div class="commenterImage">
+                                <img src="{{comment.comment_author.name|gravatar}}"/>
+                            </div>
+                            <div class="commentText">
+                                {{comment.text|safe}}
+                                <span class="date sub-text">{{comment.comment_author.name}}</span>
+
+                            </div>
+                        </li>
+                    </ul>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+          </div>
+      </div>
+    </div>
+  </article>
+
+  <hr>
+{% include "footer.html" %}

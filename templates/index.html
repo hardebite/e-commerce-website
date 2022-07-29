@@ -1,0 +1,55 @@
+
+{% include "header.html" %}
+  <!-- Page Header -->
+  <header class="masthead" >
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>For the love of Cake</h1>
+            <span class="subheading">A catalogue of yummy.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% for products in all_products %}
+        <div class="post-preview">
+          <a href="{{ url_for('show_post', products_id=products.id) }}">
+            <img class="image" src="{{products.img_url}}">
+            <div class="post-title col-sm-6 col-lg-6">{{products.name}}</div>
+            <p style="color:grey;" class="old"><s>
+              ${{products.price +15}}
+            </s></p><h3 class="post-subtitle">
+              ${{products.price}}
+            </h3>
+          </a>
+
+              {% if current_user.id ==1 :%}
+            <a href="{{url_for('delete_post', products_id=products.id) }}"><button class="btn btn-primary">delete item</button></a>
+            {% endif %}
+          </p>
+        </div>
+        <hr>
+        {% endfor %}
+
+
+        <!-- New Post -->
+        <div class="clearfix">
+          {% if current_user.id ==1 :%}
+          <a class="btn btn-primary float-right" href="{{url_for('add_new_post')}}">Add New Product</a>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+
+{% include "footer.html" %}

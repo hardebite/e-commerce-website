@@ -1,0 +1,70 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{% include "header.html" %}
+
+  <!-- Page Header -->
+  <header class="masthead" >
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Cart</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+<!--         {% if products not in cart%}-->
+<!--          <h2>your cart is empty</h2>-->
+<!--        {% endif%}-->
+        {% for products in cart: %}
+              {{products.Name}}
+
+        <div class="post-preview">
+          <a href="{{ url_for('show_post', products_id=products.id) }}">
+            <img src="{{products.img_url}}">
+            <div class="post-title col-sm-6 col-lg-6">{{products.Name}}</div>
+            <h3 class="post-subtitle">
+              ${{products.price}} quantity:{{products.quantity}}
+
+            </h3>
+          </a>
+          <a href="{{url_for('delete_cart', products_id=products.id) }}"><button class="btn btn-primary">remove</button></a>
+
+
+        </div>
+        <hr>
+
+<form action="{{url_for('charge',amount=total,products_id=products.id)}}" method="post">
+  {% endfor %}
+  <article>
+    <label>
+      <h2><span>Amount is :  ${{total/100}}</span></h2>
+    </label>
+  </article>
+
+  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="{{ key }}"
+          data-description="A Flask Charge"
+          data-amount="{{total}}"
+          data-locale="auto"></script>
+    </form>
+
+
+
+
+      </div>
+    </div>
+  </div>
+  <hr>
+
+    {% include "footer.html" %}
+{% endblock %}

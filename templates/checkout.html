@@ -1,0 +1,49 @@
+{% include "header.html" %}
+
+ <form id="paymentForm">
+2  <div class="form-group">
+3    <label for="email">Email Address</label>
+4    <input type="email" id="email-address" required />
+5  </div>
+6  <div class="form-group">
+7    <label for="amount">Amount</label>
+8    <input type="tel" id="amount" required />
+9  </div>
+10  <div class="form-group">
+11    <label for="first-name">First Name</label>
+12    <input type="text" id="first-name" />
+13  </div>
+14  <div class="form-group">
+15    <label for="last-name">Last Name</label>
+16    <input type="text" id="last-name" />
+17  </div>
+18  <div class="form-submit">
+19    <a href="{{ url_for('pay_with_paystack')}}" ><button type="submit"> Pay </button></a>
+20  </div>
+21</form>
+22
+23<script src="https://js.paystack.co/v1/inline.js"></script>
+const paymentForm = document.getElementById('paymentForm');
+2paymentForm.addEventListener("submit", payWithPaystack, false);
+3function payWithPaystack(e) {
+4  e.preventDefault();
+5
+6  let handler = PaystackPop.setup({
+7    key: 'pk_test_xxxxxxxxxx', // Replace with your public key
+8    email: document.getElementById("email-address").value,
+9    amount: document.getElementById("amount").value * 100,
+10    ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+11    // label: "Optional string that replaces customer email"
+12    onClose: function(){
+13      alert('Window closed.');
+14    },
+15    callback: function(response){
+16      let message = 'Payment complete! Reference: ' + response.reference;
+17      alert(message);
+18    }
+19  });
+20
+21  handler.openIframe();
+22}
+
+{% include "footer.html" %}

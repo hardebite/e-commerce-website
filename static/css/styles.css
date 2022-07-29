@@ -1,0 +1,50 @@
+body{
+background-color:#ADD8E6;
+ font-family: 'Montserrat', sans-serif;
+}
+.masthead{
+height:200px;
+}
+img{
+width:50rem;
+border-radius:100%;
+
+}
+h1{
+  font-family: 'Sacramento', cursive;
+  font-size:10rem;
+}
+.title{
+  font-family: 'Sacramento', cursive;
+  font-size:10rem;
+}
+.review{
+position:relative;
+top:50px;
+padding-bottom:30px;
+}
+.site-heading{
+
+font-size:20px;
+
+}
+
+.old{
+position:relative;
+right:369px;
+top:20px;
+}
+@media screen and (max-width:1000px){
+img{
+width:50rem;
+border-radius:100%;
+padding-top:100px;
+}
+.clearfix{
+padding-top:100px;
+}
+.old{
+position:relative;
+left:5px;
+}
+}
