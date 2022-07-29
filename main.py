@@ -21,13 +21,13 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 stripe_keys = {
-  'secret_key': "sk_test_51LPlYNJIm7IQ4AmUTfWbP2JkXf8Xm61rms5mpwYtiNm6UbbinN5NRC7OCz6Uk0mHZNlSYieRqRdY624g9n8QXaf000kHfGRJMT",
-  'publishable_key': "pk_test_51LPlYNJIm7IQ4AmUucoeKithsx6v4sAITdEkx72PjJQ4GpuMvOUcZwr5NCkvrB5ffZ5YqDNVFYKo9XoNCqJW62Q400c9R552L6"
+  'secret_key': os.environ.get("secret_key"),
+  'publishable_key': os.environ.get("publishable_key")
 }
 
 stripe.api_key = stripe_keys['secret_key']
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "qwertyui876543edrftgyh"
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
