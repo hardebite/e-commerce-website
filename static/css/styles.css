@@ -35,7 +35,11 @@ right:369px;
 top:20px;
 }
 @media screen and (max-width:1000px){
-img{
+h1{
+  font-family: 'Sacramento', cursive;
+  font-size:5rem;
+}i
+mg{
 width:30rem;
 border-radius:100%;
 padding-top:200px;
