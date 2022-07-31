@@ -41,9 +41,10 @@ h1{
 
 }
 img{
-width:25rem;
+width:30rem;
 border-radius:100%;
-padding-top:30px;
+margin-left:35px;
+
 }
 .clearfix{
 padding-top:100px;
