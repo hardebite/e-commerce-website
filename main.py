@@ -30,7 +30,8 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+# app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = 'qwery'
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
@@ -277,24 +278,23 @@ def cart():
     img=[]
 
     for item in cart:
-        print(item.Name)
-        try:
-            if item.author_id == current_user.id:
-                goods.append(item.Name)
-                img.append(item.img_url)
-                to = item.price * item.quantity
-                total += to
+        if item.author_id == current_user.id:
+            goods.append(item.Name)
+            img.append(item.img_url)
+            to = item.price * item.quantity
+            total += to
             final_amount= total*100
-            return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
-        except AttributeError:
-            if item.author_id == your_id:
-                goods.append(item.Name)
-                img.append(item.img_url)
-                to = item.price * item.quantity
-                total += to
-        final_amount= total*100
         return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
-
+    #     except:
+    #         if item.author_id == your_id:
+    #             goods.append(item.Name)
+    #             img.append(item.img_url)
+    #             to = item.price * item.quantity
+    #             total += to
+    #         final_amount= total*100
+    #         return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
+    # return render_template("cart.html", cart=cart, current_user=current_user, total=final_amount,
+    #                        key=stripe_keys['publishable_key'])
 @app.route('/charge', methods=['POST'])
 def charge():
     # Amount in cents
