@@ -91,7 +91,7 @@ left:5px;
 }
 .commentList li {
     margin:0;
-    margin-top:20px;
+    margin-top:10px;
 }
 .commentList li > div {
     display:table-cell;
