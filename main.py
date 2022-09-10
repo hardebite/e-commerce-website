@@ -37,7 +37,7 @@ Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 gravatar = Gravatar(app,
-                    size=100,
+                    size=10,
                     rating='g',
                     default='retro',
                     force_default=False,
