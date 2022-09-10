@@ -2,6 +2,7 @@
 import os
 from os import abort
 from functools import wraps
+from random import  randint
 
 # from dominate import document
 from flask import Flask, render_template, redirect, url_for, flash,request,abort
@@ -19,6 +20,8 @@ from forms import  *
 from sqlalchemy.ext.declarative import declarative_base
 
 
+your_id = randint(1500,3000)
+
 
 stripe_keys = {
   'secret_key': os.environ.get("secret_key"),
@@ -27,7 +30,8 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+# app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = 'qwertyuiop'
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
@@ -220,6 +224,7 @@ def contact():
 
 @app.route("/cart/<product_id>",methods=["GET","POST"])
 def add_cart(product_id):
+    print(your_id)
     cart = Cart.query.all()
     print(product_id)
     print(request.args["number"])
@@ -227,18 +232,38 @@ def add_cart(product_id):
     product_add= Product.query.get(products_id)
     price = product_add.price
     quantity = request.args["number"]
+    try:
+        product_to_add= Cart(
+                        author_id=current_user.id,
+                        Name= product_add.name,
+                        price=product_add.price,
+                        img_url=product_add.img_url,
+                        quantity=request.args["number"],
+                        )
 
-    product_to_add= Cart(
-                    author_id=current_user.id,
-                    Name= product_add.name,
-                    price=product_add.price,
-                    img_url=product_add.img_url,
-                    quantity=request.args["number"],
-                    )
+        db.session.add(product_to_add)
+        db.session.commit()
+    except  :
 
-    db.session.add(product_to_add)
-    db.session.commit()
+        customer = User.query.all()
+        for users in customer:
+            if your_id == users.id:
+                print('yes')
+
+
+        product_to_add = Cart(
+            author_id=your_id,
+            Name=product_add.name,
+            price=product_add.price,
+            img_url=product_add.img_url,
+            quantity=request.args["number"],
+        )
+
+        db.session.add(product_to_add)
+        db.session.commit()
+
     return redirect(url_for("show_post",products_id=product_id))
+
 
     # except:
     #     flash("you have to login to add items to cart")
@@ -246,20 +271,30 @@ def add_cart(product_id):
 
 @app.route("/cart",methods=["POST","GET"])
 def cart():
-    cart = Cart.query.filter_by(author_id=current_user.id)
+
+    cart = Cart.query.filter_by(author_id=your_id)
     total=0
     goods=[]
     img=[]
 
     for item in cart:
         print(item.Name)
-        if item.author_id == current_user.id:
-            goods.append(item.Name)
-            img.append(item.img_url)
-            to = item.price * item.quantity
-            total += to
-    final_amount= total*100
-    return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
+        try:
+            if item.author_id == current_user.id:
+                goods.append(item.Name)
+                img.append(item.img_url)
+                to = item.price * item.quantity
+                total += to
+            final_amount= total*100
+            return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
+        except AttributeError:
+            if item.author_id == your_id:
+                goods.append(item.Name)
+                img.append(item.img_url)
+                to = item.price * item.quantity
+                total += to
+        final_amount= total*100
+        return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
 
 @app.route('/charge', methods=['POST'])
 def charge():

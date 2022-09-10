@@ -50,12 +50,15 @@
       <h2><span>Amount is :  ${{total/100}}</span></h2>
     </label>
   </article>
-
+{%  if current_user.is_authenticated:%}
   <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
           data-key="{{ key }}"
           data-description="A Flask Charge"
           data-amount="{{total}}"
           data-locale="auto"></script>
+  {% else:%}
+    <h3>you have to login to checkout</h3>
+  {% endif%}
     </form>
 
 
