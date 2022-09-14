@@ -64,6 +64,13 @@ position:relative;
 right:369px;
 top:20px;
 }
+@media screen and (min-width:900px){
+.collapse{
+position:relative;
+left:600px;
+}
+
+}
 @media screen and (max-width:1000px){
 h1{
   font-family: 'Sacramento', cursive;
@@ -76,6 +83,7 @@ border-radius:100%;
 margin-left:23px;
 
 }
+
 .clearfix{
 padding-top:100px;
 }
