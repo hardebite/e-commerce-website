@@ -2,7 +2,6 @@
 import os
 from os import abort
 from functools import wraps
-from random import  randint
 
 # from dominate import document
 from flask import Flask, render_template, redirect, url_for, flash,request,abort
@@ -20,8 +19,6 @@ from forms import  *
 from sqlalchemy.ext.declarative import declarative_base
 
 
-your_id = randint(1500,3000)
-
 
 stripe_keys = {
   'secret_key': os.environ.get("secret_key"),
@@ -30,8 +27,7 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 app = Flask(__name__)
-# app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-app.config['SECRET_KEY'] = 'qwery'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
@@ -73,7 +69,7 @@ class User(UserMixin, db.Model):
 
 
 class Product(db.Model):
-    __tablename__ = "products"
+    __tablename__ = "products "
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     author = relationship("User", back_populates="posts")
@@ -97,7 +93,7 @@ class Sales(db.Model):
 
 
 class Cart(db.Model):
-            __tablename__ = "cart"
+            __tablename__ = "cart "
             id = db.Column(db.Integer, primary_key=True)
             author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
             cart_author = relationship("User", back_populates="cart")
@@ -224,7 +220,6 @@ def contact():
 
 @app.route("/cart/<product_id>",methods=["GET","POST"])
 def add_cart(product_id):
-    print(your_id)
     cart = Cart.query.all()
     print(product_id)
     print(request.args["number"])
@@ -243,58 +238,29 @@ def add_cart(product_id):
 
         db.session.add(product_to_add)
         db.session.commit()
-    except  :
+        return redirect(url_for("show_post",products_id=product_id))
 
-        customer = User.query.all()
-        for users in customer:
-            if your_id == users.id:
-                print('yes')
-
-
-        product_to_add = Cart(
-            author_id=your_id,
-            Name=product_add.name,
-            price=product_add.price,
-            img_url=product_add.img_url,
-            quantity=request.args["number"],
-        )
-
-        db.session.add(product_to_add)
-        db.session.commit()
-
-    return redirect(url_for("show_post",products_id=product_id))
-
-
-    # except:
-    #     flash("you have to login to add items to cart")
-    #     return redirect(url_for("show_post",products_id=product_id))
+    except:
+        flash("you have to login to add items to cart")
+        return redirect(url_for("show_post",products_id=product_id))
 
 @app.route("/cart",methods=["POST","GET"])
 def cart():
-
-    cart = Cart.query.filter_by(author_id=your_id)
+    cart = Cart.query.filter_by(author_id=current_user.id)
     total=0
     goods=[]
     img=[]
 
     for item in cart:
+        print(item.Name)
         if item.author_id == current_user.id:
             goods.append(item.Name)
             img.append(item.img_url)
             to = item.price * item.quantity
             total += to
-            final_amount= total*100
-        return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
-    #     except:
-    #         if item.author_id == your_id:
-    #             goods.append(item.Name)
-    #             img.append(item.img_url)
-    #             to = item.price * item.quantity
-    #             total += to
-    #         final_amount= total*100
-    #         return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
-    # return render_template("cart.html", cart=cart, current_user=current_user, total=final_amount,
-    #                        key=stripe_keys['publishable_key'])
+    final_amount= total*100
+    return render_template("cart.html", cart =cart , current_user=current_user, total = final_amount,key=stripe_keys['publishable_key'])
+
 @app.route('/charge', methods=['POST'])
 def charge():
     # Amount in cents
@@ -416,3 +382,4 @@ def delete_post(products_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
